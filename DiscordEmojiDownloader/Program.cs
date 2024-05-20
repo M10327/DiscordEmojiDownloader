@@ -26,6 +26,7 @@ public class EmojiDownloader
             Console.WriteLine("You do not have \'apng2gif.exe\' downloaded to the root project directory!" +
                 "\nPlease download it from https://sourceforge.net/projects/apng2gif/files/1.8/" +
                 "\nand extract the NON GUI exe into same folder as the exe for this program");
+            Console.ReadLine();
             return;
         }
         if (!Directory.Exists($"{Directory.GetCurrentDirectory()}\\attaches"))
@@ -184,6 +185,16 @@ public class EmojiDownloader
                     
                     var downloadResp = await GetImage($"https://media.discordapp.net/stickers/{s.SelectToken("id")}.webp?size=1280", sname);
                     File.WriteAllBytes($"{Directory.GetCurrentDirectory()}\\attaches\\{guild}\\stickers\\{sname}.webp", downloadResp);
+                }
+                else if (s.SelectToken("format_type").ToString() == "4")
+                {
+                    if (!sNames.Contains(sname, StringComparer.OrdinalIgnoreCase))
+                        sNames.Add(sname);
+                    else
+                        sname = $"{sname} - {s.SelectToken("id")}";
+
+                    var downloadResp = await GetImage($"https://media.discordapp.net/stickers/{s.SelectToken("id")}.gif?size=1280", sname);
+                    File.WriteAllBytes($"{Directory.GetCurrentDirectory()}\\attaches\\{guild}\\stickers_anim\\{sname}.gif", downloadResp);
                 }
                 else
                 {
